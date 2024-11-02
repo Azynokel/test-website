@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Canvas Dodging Game</title>
+  <style>
+    canvas {
+      border: 1px solid black;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="gameCanvas" width="400" height="400"></canvas>
+
+  <script>
+    const canvas = document.getElementById("gameCanvas");
+    const context = canvas.getContext("2d");
+
+    // Player character
+    const player = {
+      x: 200,
+      y: 350,
+      width: 50,
+      height: 50,
+      speed: 5,
+      color: "blue",
+      isMoving: false
+    };
+
+    // Falling objects
+    const objects = [];
+    const objectSize = 20;
+    const objectSpeed = 2;
+    let objectInterval = 1000; // Initial interval duration in milliseconds
+
+    // Game state
+    let gameOver = false;
+    let score = 0;
+
+    // Function to draw the player character
+    function drawPlayer() {
+      context.fillStyle = player.color;
+      context.fillRect(player.x, player.y, player.width, player.height);
+    }
+
+    // Function to draw the falling objects
+    function drawObjects() {
+      for (let i = 0; i < objects.length; i++) {
+        const object = objects[i];
+        context.fillStyle = "red";
+        context.fillRect(object.x, object.y, objectSize, objectSize);
+      }
+    }
+
+    // Function to clear the canvas
+    function clearCanvas() {
+      context.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    // Function to update the game
+    function update() {
+      if (!gameOver) {
+        clearCanvas();
+        drawPlayer();
+        drawObjects();
+        moveObjects();
+        checkCollision();
+        displayScore();
+      } else {
+        endGame();
+      }
+
+      // Request the next frame
+      requestAnimationFrame(update);
+    }
+
+    // Function to move the falling objects
+    function moveObjects() {
+      for (let i = 0; i < objects.length; i++) {
+        const object = objects[i];
+        object.x += object.speedX;
+        object.y += object.speedY;
+      }
+
+      // Remove objects that are off the canvas
+      objects.filter(object => object.y < canvas.height);
+    }
+
+    // Function to check collision between player and objects
+    function checkCollision() {
+      for (let i = 0; i < objects.length; i++) {
+        const object = objects[i];
+        if (
+          player.x < object.x + objectSize &&
+          player.x + player.width > object.x &&
+          player.y < object.y + objectSize &&
+          player.y + player.height > object.y
+        ) {
+          gameOver = true;
+        }
+      }
+    }
+
+    // Function to display the current score
+    function displayScore() {
+      context.fillStyle = "black";
+      context.font = "16px Arial";
+      context.fillText("Score: " + score, 10, 20);
+    }
+
+    // Function to move the player character
+    function movePlayer(event) {
+      if (event.type === "touchstart" || event.type === "mousemove") {
+        player.isMoving = true;
+      } else if (event.type === "touchend") {
+        player.isMoving = false;
+      }
+
+      if (player.isMoving) {
+        const rect = canvas.getBoundingClientRect();
+        const touchX = event.clientX || event.touches[0].clientX;
+        const touchY = event.clientY || event.touches[0].clientY;
+
+        player.x = touchX - rect.left - player.width / 2;
+        player.y = touchY - rect.top - player.height / 2;
+      }
+    }
+    
+    // Function to end the game
+    function endGame() {
+      clearCanvas();
+      context.fillStyle = "black";
+      context.font = "30px Arial";
+      context.fillText("Game Over", canvas.width / 2 - 80, canvas.height / 2);
+      context.font = "20px Arial";
+      context.fillText("Final Score: " + score, canvas.width / 2 - 60, canvas.height / 2 + 40);
+    }
+
+    function generateObject() {
+      if (!gameOver) {
+        const side = Math.floor(Math.random() * 4); // Randomly select the side (0: top, 1: right, 2: bottom, 3: left)
+        let x, y, speedX, speedY;
+
+        if (side === 0) {
+          x = Math.random() * (canvas.width - objectSize);
+          y = -objectSize;
+          speedX = (canvas.width / 2 - x) / 200;
+          speedY = objectSpeed;
+        } else if (side === 1) {
+          x = canvas.width;
+          y = Math.random() * (canvas.height - objectSize);
+          speedX = -objectSpeed;
+          speedY = (canvas.height / 2 - y) / 200;
+        } else if (side === 2) {
+          x = Math.random() * (canvas.width - objectSize);
+          y = canvas.height;
+          speedX = (canvas.width / 2 - x) / 200;
+          speedY = -objectSpeed;
+        } else if (side === 3) {
+          x = -objectSize;
+          y = Math.random() * (canvas.height - objectSize);
+          speedX = objectSpeed;
+          speedY = (canvas.height / 2 - y) / 200;
+        }
+
+        const object = { x, y, speedX, speedY };
+        objects.push(object);
+        score++; // Increase the score
+
+        if (score % 10 === 0) {
+          // Decrease the interval duration by 100 milliseconds for every 10 points
+          objectInterval -= 100;
+          if (objectInterval < 300) {
+            objectInterval = 300; // Set a minimum interval of 200 milliseconds
+          }
+        }
+        
+        // Call the generateObject function again after the objectInterval duration
+        setTimeout(generateObject, objectInterval);
+      }
+    }
+
+    // Event listener for mousemove event
+    canvas.addEventListener("mousemove", movePlayer);
+    canvas.addEventListener("touchstart", movePlayer);
+    canvas.addEventListener("touchmove", movePlayer);
+    canvas.addEventListener("touchend", movePlayer);
+
+    // Start the game loop
+    update();
+    generateObject();
+
+  </script>
+</body>
+</html>
