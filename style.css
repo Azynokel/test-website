@@ -1,0 +1,60 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background: #242526;
+}
+
+#container {
+    position: absolute;
+    height: 100vh;
+    width: 100vw;
+    max-width: 56.25vh;         /* 16:9 ratio (56.25)*/
+    max-height: 177.77vw;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#userGame {
+    position: absolute;
+    width: 100%;
+    height: 90%;
+    image-rendering: pixelated;
+    border: 0;
+}
+
+#sidebar {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    height: 10%;    /* => 8:5 ratio ohne Sidebar*/
+    width: 100%;
+    /*border: 4px solid rgb(175, 175, 255);*/
+    background: #18191A;
+    list-style-type: none;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+#sidebar button {
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    height: 100%;
+    width: 100%;
+}
+
+#sidebar button img {
+    background: transparent;
+    height: 70%;
+    opacity: 0.8;
+    pointer-events: none;
+}
+
+#sidebar button #heart {
+    height: 90%;
+}
