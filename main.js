@@ -11,12 +11,12 @@ var iframeSources = [
     //'./Oversimplified Games/Tennis',
     './Oversimplified Games/TikTakToe/index.html',
     //'./Oversimplified Games',
-    './Games/Blue/index.html',
+    //'./Games/Blue/index.html',
     './Oversimplified Games/DogeGame/index.html',
     //'./Games/Goblin',
-    './Games/Green/index.html',
+    //'./Games/Green/index.html',
     //'./Games/Pokemon',
-    './Games/Red/index.html',
+    //'./Games/Red/index.html',
     './Oversimplified Games/WhatXAreYou/Pokemon/index.html'
     //'./Games/Test',
 ];
